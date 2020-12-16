@@ -1,0 +1,38 @@
+name: Create PR
+on:
+  push:
+    branches:
+      - main
+jobs:
+  PRReleaseProd:
+    name: Create PR to prod
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - run: |
+        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/action-test.git
+        git fetch origin master
+        git fetch origin prod
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TZ: Asia/Tokyo
+    - run: |
+        cat << EOF > pr.template
+        [Production] Release <%= Time.now.strftime("%F %T") %>
+        <% pull_requests.each do |pr| -%>
+        <%= pr.to_checklist_item %>
+        <% end -%>
+        EOF
+    name: Set up Ruby
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.6.x
+      env:
+        GIT_PR_RELEASE_TEMPLATE: ./pr.template
+        GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GIT_PR_RELEASE_BRANCH_STAGING: main
+        GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
+        GIT_PR_RELEASE_LABELS: "Release/Production"
+        TZ: Asia/Tokyo
