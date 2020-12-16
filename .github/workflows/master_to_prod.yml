@@ -25,7 +25,7 @@ jobs:
         <%= pr.to_checklist_item %>
         <% end -%>
         EOF
-    name: Set up Ruby
+    - name: Set up Ruby
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
