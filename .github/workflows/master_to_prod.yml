@@ -3,7 +3,7 @@ name: Create a release pull request
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
   create-release-pr:
@@ -21,8 +21,8 @@ jobs:
     - name: Create a release pull request
       env:
         GIT_PR_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GIT_PR_RELEASE_BRANCH_PRODUCTION: master
-        GIT_PR_RELEASE_BRANCH_STAGING: develop
+        GIT_PR_RELEASE_BRANCH_PRODUCTION: prod
+        GIT_PR_RELEASE_BRANCH_STAGING: main
         GIT_PR_RELEASE_LABELS: release
       run: |
         gem install -N git-pr-release -v "1.2.0"
